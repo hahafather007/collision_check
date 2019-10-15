@@ -4,7 +4,9 @@ import 'package:flutter/widgets.dart';
 abstract class CcShape {
   CcOffset _position;
 
-  CcShape(CcOffset position) : _position = position ?? CcOffset.zero;
+  CcShape(CcOffset position)
+      : assert(position != null),
+        _position = position;
 
   @mustCallSuper
   // ignore: unnecessary_getters_setters

@@ -9,22 +9,19 @@ class CcCircle extends CcShape {
 
   CcCircle(this.radius, {CcOffset center, CcOffset position})
       : assert(center == null || position == null),
-        this.center = center == null
-            ? position == null
-                ? CcOffset(radius, radius)
-                : position.translate(radius, radius)
-            : center,
-        this.rect = CcRect(radius * 2, radius * 2,
-            position: center == null
-                ? position == null ? CcOffset.zero : position
-                : center.translate(-radius, -radius)),
-        super(center == null ? position : center.translate(-radius, -radius));
+        this.center = center ??
+            (position == null
+                ? CcOffset.zero.translate(radius, radius)
+                : position.translate(radius, radius)),
+        this.rect =
+            CcRect(2 * radius, 2 * radius, position: position ?? CcOffset.zero),
+        super(position ?? CcOffset.zero);
 
   @override
   set position(CcOffset value) {
     super.position = value;
 
     rect.position = value;
-    center += value;
+    value.translate(radius, radius);
   }
 }

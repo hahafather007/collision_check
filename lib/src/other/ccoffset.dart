@@ -1,33 +1,29 @@
 import 'dart:math';
 
+import 'dart:ui';
+
 class CcOffset {
-  double _dx;
-  double _dy;
+  final double dx;
+  final double dy;
 
-  double get dx => _dx;
+  const CcOffset(this.dx, this.dy);
 
-  double get dy => _dy;
-
-  CcOffset(double dx, double dy)
-      : this._dx = dx,
-        this._dy = dy;
+  CcOffset.formOffset(Offset offset)
+      : assert(Offset != null),
+        this.dx = offset.dx,
+        this.dy = offset.dy;
 
   CcOffset translate(double translateX, double translateY) =>
       CcOffset(dx + translateX, dy + translateY);
 
-  void changeValue(double valueX, double valueY) {
-    _dx += valueX;
-    _dy += valueY;
-  }
-
-  double distance(CcOffset other){
+  double distance(CcOffset other) {
     final w = dx - other.dx;
     final h = dy - other.dy;
 
     return sqrt(w * w + h * h);
   }
 
-  static CcOffset get zero => CcOffset(0, 0);
+  static const CcOffset zero = const CcOffset(0, 0);
 
   CcOffset operator +(CcOffset other) => CcOffset(dx + other.dx, dy + other.dy);
 
