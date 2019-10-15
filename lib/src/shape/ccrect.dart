@@ -4,30 +4,31 @@ import 'package:flutter/cupertino.dart';
 class CcRect extends CcShape {
   final double height;
   final double width;
-  final double left;
-  final double right;
-  final double top;
-  final double bottom;
-  final Offset leftTop;
-  final Offset rightTop;
-  final Offset rightBottom;
-  final Offset leftBottom;
+  double left;
+  double top;
+  double right;
+  double bottom;
+  Offset leftTop;
+  Offset rightTop;
+  Offset rightBottom;
+  Offset leftBottom;
 
   /// 左上角坐标和宽高
-  CcRect.formLTWH(this.left, this.top, this.width, this.height)
-      : this.right = left + width,
-        this.bottom = top + height,
-        this.leftTop = Offset(left, top),
-        this.rightTop = Offset(left + width, top),
-        this.rightBottom = Offset(left + width, top + height),
-        this.leftBottom = Offset(left, top - height);
+  CcRect(this.width, this.height, {Offset position = const Offset(0, 0)})
+      : left = 0,
+        top = 0,
+        right = width,
+        bottom = height,
+        this.leftTop = position,
+        this.rightTop = position.translate(width, 0),
+        this.rightBottom = position.translate(width, height),
+        this.leftBottom = position.translate(0, height);
 
-  /// 左上角坐标和右下角坐标
-  CcRect.formLTRB(this.left, this.top, this.right, this.bottom)
-      : this.width = right - left,
-        this.height = bottom - top,
-        this.leftTop = Offset(left, top),
-        this.rightTop = Offset(right, top),
-        this.rightBottom = Offset(right, bottom),
-        this.leftBottom = Offset(left, bottom);
+  @override
+  void setPosition(Offset position) {
+    leftTop = position;
+    rightTop += position;
+    rightBottom += position;
+    leftBottom += position;
+  }
 }
