@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:collision_check/src/other/ccoffset.dart';
 import 'package:collision_check/src/shape/ccrect.dart';
 import 'package:collision_check/src/shape/ccshape.dart';
 
@@ -7,18 +6,17 @@ import 'package:collision_check/src/shape/ccshape.dart';
 /// [points] 顺时针开始的所有关键相对于该几何图形外切矩形左上角(0,0)的偏移量
 /// [points] 尽可能排除非关键坐标，越少效率越高
 class CcComplex extends CcShape {
-  final List<Offset> points;
+  final List<CcOffset> points;
   final CcRect rect;
 
-  CcComplex(this.points, {Offset position = const Offset(0, 0)})
+  CcComplex(this.points, {CcOffset position})
       : assert(points.length > 2),
-        this.rect = _initRect(points) {
-    if (position != const Offset(0, 0)) {
-      setPosition(position);
-    }
+        this.rect = _initRect(points, position),
+        super(position) {
+    if (position != null) {}
   }
 
-  static CcRect _initRect(List<Offset> points) {
+  static CcRect _initRect(List<CcOffset> points, CcOffset position) {
     double height = 0;
     double width = 0;
     points.forEach((offset) {
@@ -30,14 +28,14 @@ class CcComplex extends CcShape {
       }
     });
 
-    return CcRect(width, height);
+    return CcRect(width, height, position: position);
   }
 
   @override
-  void setPosition(Offset position) {
-    for (var i = 0; i < points.length; i++) {
-      points[i] += position;
-    }
-    rect.setPosition(position);
+  set position(CcOffset value) {
+    super.position = value;
+
+    points.forEach((offset) => offset.changeValue(value.dx, value.dy));
+    rect.position = value;
   }
 }

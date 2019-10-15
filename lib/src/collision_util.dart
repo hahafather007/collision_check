@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'dart:ui';
 
+import 'package:collision_check/src/other/ccoffset.dart';
 import 'package:collision_check/src/shape/cccircle.dart';
 import 'package:collision_check/src/shape/cccomplex.dart';
 import 'package:collision_check/src/shape/ccrect.dart';
@@ -90,23 +90,15 @@ class CollisionUtil {
     return false;
   }
 
-  /// 获取两点之间的距离
-  static double _getPointDistance(Offset o1, Offset o2) {
-    final w = o1.dx - o2.dx;
-    final h = o1.dy - o2.dy;
-
-    return sqrt(w * w + h * h);
-  }
-
   /// 获取[o]点距离[o1]和[o2]线段的距离
   /// https://blog.csdn.net/yjukh/article/details/5213577
-  static double _getNearestDistance(Offset o1, Offset o2, Offset o) {
+  static double _getNearestDistance(CcOffset o1, CcOffset o2, CcOffset o) {
     // 判断该点是否为线段端点
     if (o1 == o || o2 == o) return 0;
 
-    final a = _getPointDistance(o2, o);
-    final b = _getPointDistance(o1, o);
-    final c = _getPointDistance(o1, o2);
+    final a = o2.distance(o);
+    final b = o1.distance(o);
+    final c = o1.distance(o2);
 
     // 判断是否为钝角
     if (a * a >= b * b + c * c) return b;

@@ -1,5 +1,5 @@
+import 'package:collision_check/src/other/ccoffset.dart';
 import 'package:collision_check/src/shape/ccshape.dart';
-import 'package:flutter/cupertino.dart';
 
 class CcRect extends CcShape {
   final double height;
@@ -8,24 +8,37 @@ class CcRect extends CcShape {
   double top;
   double right;
   double bottom;
-  Offset leftTop;
-  Offset rightTop;
-  Offset rightBottom;
-  Offset leftBottom;
+  CcOffset leftTop;
+  CcOffset rightTop;
+  CcOffset rightBottom;
+  CcOffset leftBottom;
 
   /// 左上角坐标和宽高
-  CcRect(this.width, this.height, {Offset position = const Offset(0, 0)})
-      : left = 0,
-        top = 0,
-        right = width,
-        bottom = height,
-        this.leftTop = position,
-        this.rightTop = position.translate(width, 0),
-        this.rightBottom = position.translate(width, height),
-        this.leftBottom = position.translate(0, height);
+  CcRect(this.width, this.height, {CcOffset position})
+      : this.left = position?.dx ?? 0,
+        this.top = position?.dy ?? 0,
+        this.right = position == null ? width : width + position.dx,
+        this.bottom = position == null ? height : height + position.dy,
+        this.leftTop = position ?? CcOffset.zero,
+        this.rightTop = position == null
+            ? CcOffset(width, 0)
+            : position.translate(width, 0),
+        this.rightBottom = position == null
+            ? CcOffset(width, height)
+            : position.translate(width, height),
+        this.leftBottom = position == null
+            ? CcOffset(0, height)
+            : position.translate(0, height),
+        super(position);
 
   @override
-  void setPosition(Offset position) {
+  set position(CcOffset value) {
+    super.position = value;
+
+    left = position.dx;
+    top = position.dy;
+    right = width + position.dx;
+    bottom = height + position.dy;
     leftTop = position;
     rightTop += position;
     rightBottom += position;
