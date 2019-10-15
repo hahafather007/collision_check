@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:ui';
 
 import 'package:collision_check/src/shape/ccrect.dart';
@@ -36,10 +35,9 @@ class CcComplex extends CcShape {
 
   @override
   void setPosition(Offset position) {
-    final otherList = List<Offset>();
-    points.forEach((offset) => otherList.add(offset + position));
-    points.clear();
-    points.addAll(otherList);
+    for (var i = 0; i < points.length; i++) {
+      points[i] += position;
+    }
     rect.setPosition(position);
   }
 }
