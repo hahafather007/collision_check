@@ -1,5 +1,5 @@
-import 'package:collision_check/src/other/ccoffset.dart';
-import 'package:flutter/widgets.dart';
+import 'package:collision_check/src/other/offset.dart';
+import 'package:flutter/widgets.dart' show mustCallSuper;
 
 abstract class CcShape {
   CcOffset _position;

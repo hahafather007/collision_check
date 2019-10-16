@@ -1,32 +1,32 @@
 import 'dart:math';
 
-import 'package:collision_check/src/other/ccoffset.dart';
-import 'package:collision_check/src/shape/cccircle.dart';
-import 'package:collision_check/src/shape/cccomplex.dart';
-import 'package:collision_check/src/shape/ccrect.dart';
-import 'package:collision_check/src/shape/ccshape.dart';
+import 'package:collision_check/src/other/offset.dart';
+import 'package:collision_check/src/shape/circle.dart';
+import 'package:collision_check/src/shape/complex.dart';
+import 'package:collision_check/src/shape/rect.dart';
+import 'package:collision_check/src/shape/shape.dart';
 
 class CollisionUtil {
   /// 判断[a]和[b]是否🍌
   static bool isCollision(CcShape a, CcShape b) {
     if (a is CcRect) {
       if (b is CcRect) {
-        return _rectToRect(a, b);
+        return rectToRect(a, b);
       } else if (b is CcCircle) {
-        return _rectToCircle(a, b);
+        return rectToCircle(a, b);
       } else {}
     } else if (a is CcCircle) {
       if (b is CcRect) {
-        return _rectToCircle(b, a);
+        return rectToCircle(b, a);
       } else if (b is CcCircle) {
-        return _circleToCircle(a, b);
+        return circleToCircle(a, b);
       } else {
-        return _circleToComplex(a, b);
+        return circleToComplex(a, b);
       }
     } else {
       if (b is CcRect) {
       } else if (b is CcCircle) {
-        return _circleToComplex(b, a);
+        return circleToComplex(b, a);
       } else {}
     }
 
@@ -34,7 +34,7 @@ class CollisionUtil {
   }
 
   /// 矩形与矩形
-  static bool _rectToRect(CcRect a, CcRect b) {
+  static bool rectToRect(CcRect a, CcRect b) {
     if (a.right < b.left || b.right < a.left) return false;
     if (a.bottom < b.top || b.bottom < a.top) return false;
 
@@ -42,9 +42,9 @@ class CollisionUtil {
   }
 
   /// 矩形与圆形
-  static bool _rectToCircle(CcRect a, CcCircle b) {
+  static bool rectToCircle(CcRect a, CcCircle b) {
     // 优先利用外切矩形进行计算，节约开销
-    if (!_rectToRect(a, b.rect)) return false;
+    if (!rectToRect(a, b.rect)) return false;
 
     final points = [
       a.leftTop,
@@ -54,7 +54,7 @@ class CollisionUtil {
       a.leftTop,
     ];
     for (var i = 0; i < points.length - 1; i++) {
-      final distance = _getNearestDistance(points[i], points[i + 1], b.center);
+      final distance = getNearestDistance(points[i], points[i + 1], b.center);
       if (_getFixDouble(distance) <= b.radius) return true;
     }
 
@@ -62,9 +62,9 @@ class CollisionUtil {
   }
 
   /// 圆形与圆形
-  static bool _circleToCircle(CcCircle a, CcCircle b) {
+  static bool circleToCircle(CcCircle a, CcCircle b) {
     // 优先利用外切矩形进行计算，节约开销
-    if (!_rectToRect(a.rect, b.rect)) return false;
+    if (!rectToRect(a.rect, b.rect)) return false;
 
     final distance = a.radius + b.radius;
     final w = a.center.dx - b.center.dx;
@@ -73,15 +73,42 @@ class CollisionUtil {
     return sqrt(w * w + h * h) <= distance;
   }
 
-  /// 圆形与复杂图形
-  static bool _circleToComplex(CcCircle a, CcComplex b) {
+  /// 复杂图形与复杂图形
+  static bool _complexToComplex(CcComplex a, CcComplex b) {
     // 优先利用外切矩形进行计算，节约开销
-    if (!_rectToRect(a.rect, b.rect)) return false;
+    if (!rectToRect(a.rect, b.rect)) return false;
+
+    for (var i = 0; i < a.points.length - 1; i++) {
+      final pointA = a.points[i];
+      final pointB = a.points[i + 1];
+      // 排除不可能🍌的情况
+      if (!isLinesShadowOver(
+          pointA, pointB, b.rect.leftTop, b.rect.rightBottom)) {
+        continue;
+      }
+
+      for (var j = 0; j < b.points.length - 1; j++) {
+        final pointC = b.points[j];
+        final pointD = b.points[j + 1];
+        // 同理排除不可能🍌的情况
+        if (!isLinesShadowOver(pointA, pointB, pointC, pointD)) {
+          continue;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /// 圆形与复杂图形
+  static bool circleToComplex(CcCircle a, CcComplex b) {
+    // 优先利用外切矩形进行计算，节约开销
+    if (!rectToRect(a.rect, b.rect)) return false;
 
     final points = b.points.toList();
     points.add(points.first);
     for (var i = 0; i < points.length - 1; i++) {
-      final distance = _getNearestDistance(points[i], points[i + 1], a.center);
+      final distance = getNearestDistance(points[i], points[i + 1], a.center);
       if (distance <= a.radius) {
         return true;
       }
@@ -92,7 +119,7 @@ class CollisionUtil {
 
   /// 获取[o]点距离[o1]和[o2]线段的距离
   /// https://blog.csdn.net/yjukh/article/details/5213577
-  static double _getNearestDistance(CcOffset o1, CcOffset o2, CcOffset o) {
+  static double getNearestDistance(CcOffset o1, CcOffset o2, CcOffset o) {
     // 判断该点是否为线段端点
     if (o1 == o || o2 == o) return 0;
 
@@ -114,5 +141,26 @@ class CollisionUtil {
   /// 获取保留4位小数的[double]值，避免精度问题带来的误差
   static double _getFixDouble(double value) {
     return double.parse(value.toStringAsFixed(4));
+  }
+
+  /// 快速排斥实验
+  /// 判断[a]~[b]线段与[c]~[d]线段在x轴和y轴上的投影是否有公共区域
+  static bool isLinesShadowOver(
+      CcOffset a, CcOffset b, CcOffset c, CcOffset d) {
+    if (min(a.dx, b.dx) > max(c.dx, d.dx) ||
+        min(c.dx, d.dx) > max(a.dx, b.dx) ||
+        min(a.dy, b.dy) > max(c.dy, d.dy) ||
+        min(c.dy, d.dy) > max(a.dy, b.dy)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /// 跨立实验
+  /// 判断[a]~[b]线段与[c]~[d]线段是否🍌
+  /// https://www.rogoso.info/%E5%88%A4%E6%96%AD%E7%BA%BF%E6%AE%B5%E7%9B%B8%E4%BA%A4/
+  static bool isLinesOver(CcOffset a, CcOffset b, CcOffset c, CcOffset d) {
+
   }
 }

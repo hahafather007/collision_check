@@ -1,5 +1,5 @@
-import 'package:collision_check/src/other/ccoffset.dart';
-import 'package:collision_check/src/shape/ccshape.dart';
+import 'package:collision_check/src/other/offset.dart';
+import 'package:collision_check/src/shape/shape.dart';
 
 class CcRect extends CcShape {
   final double height;

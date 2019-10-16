@@ -1,10 +1,9 @@
-import 'package:collision_check/src/other/ccoffset.dart';
-import 'package:collision_check/src/shape/cccircle.dart';
-import 'package:collision_check/src/shape/cccomplex.dart';
-import 'package:collision_check/src/shape/ccrect.dart';
-import 'package:flutter_test/flutter_test.dart';
-
+import 'package:collision_check/src/other/offset.dart';
+import 'package:collision_check/src/shape/circle.dart';
+import 'package:collision_check/src/shape/complex.dart';
+import 'package:collision_check/src/shape/rect.dart';
 import 'package:collision_check/collision_check.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test("碰撞测试", () {

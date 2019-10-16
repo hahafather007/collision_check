@@ -1,6 +1,5 @@
-import 'dart:math';
-
-import 'dart:ui';
+import 'dart:math' show sqrt;
+import 'dart:ui' show Offset;
 
 class CcOffset {
   final double dx;
