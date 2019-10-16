@@ -8,6 +8,7 @@ abstract class CcShape {
       : assert(position != null),
         _position = position;
 
+  /// 每次位置变换时设置[position]，尽量避免频繁创建[CcShape]对象
   @mustCallSuper
   // ignore: unnecessary_getters_setters
   set position(CcOffset value) {
