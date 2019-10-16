@@ -49,5 +49,24 @@ void main() {
           complex, CcCircle(2, center: CcOffset(1, 1.2)));
       assert(value5 == true);
     }
+
+    final complex2 = CcComplex([
+      CcOffset(1, 1),
+      CcOffset(2.8, 1),
+      CcOffset(3, 0),
+      CcOffset(3.2, 1),
+      CcOffset(5, 1),
+      CcOffset(3.5, 2),
+      CcOffset(4, 4),
+      CcOffset(3, 3),
+      CcOffset(2, 4),
+      CcOffset(2.5, 2),
+    ]);
+    for (var i = 0; i < 1000000; i++) {
+      complex.position = CcOffset(1, 1.12312);
+      complex2.position = CcOffset(4.12343, 0.2384892349);
+      final value6 = CollisionUtil.isCollision(complex, complex2);
+      assert(value6 == true);
+    }
   });
 }
