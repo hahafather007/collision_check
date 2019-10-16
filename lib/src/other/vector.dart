@@ -10,4 +10,7 @@ class CcVector {
   CcVector(this.start, this.end)
       : x = end.dx - start.dx,
         y = end.dy - start.dy;
+
+  /// 向量取反
+  CcVector get negative => CcVector(end, start);
 }

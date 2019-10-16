@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:collision_check/src/other/offset.dart';
+import 'package:collision_check/src/other/vector.dart';
 import 'package:collision_check/src/shape/circle.dart';
 import 'package:collision_check/src/shape/complex.dart';
 import 'package:collision_check/src/shape/rect.dart';
@@ -14,7 +15,9 @@ class CollisionUtil {
         return rectToRect(a, b);
       } else if (b is CcCircle) {
         return rectToCircle(a, b);
-      } else {}
+      } else {
+        return rectToComplex(a, b);
+      }
     } else if (a is CcCircle) {
       if (b is CcRect) {
         return rectToCircle(b, a);
@@ -25,12 +28,13 @@ class CollisionUtil {
       }
     } else {
       if (b is CcRect) {
+        return rectToComplex(b, a);
       } else if (b is CcCircle) {
         return circleToComplex(b, a);
-      } else {}
+      } else {
+        return complexToComplex(a, b);
+      }
     }
-
-    return false;
   }
 
   /// 矩形与矩形
@@ -61,6 +65,43 @@ class CollisionUtil {
     return false;
   }
 
+  /// 矩形与复杂图形
+  static bool rectToComplex(CcRect a, CcComplex b) {
+    // 优先利用外切矩形进行计算，节约开销
+    if (!rectToRect(a, b.rect)) return false;
+    if (!isLinesShadowOver(
+        a.leftTop, a.rightBottom, b.rect.leftTop, b.rect.rightBottom))
+      return false;
+
+    final pointsA = [
+      a.leftTop,
+      a.rightTop,
+      a.rightBottom,
+      a.leftBottom,
+      a.leftTop,
+    ];
+    final pointsB = b.points.toList()..add(b.points.first);
+
+    for (var i = 0; i < pointsA.length - 1; i++) {
+      final pointA = pointsA[i];
+      final pointB = pointsA[i + 1];
+      for (var j = 0; j < pointsB.length - 1; j++) {
+        final pointC = pointsB[j];
+        final pointD = pointsB[j + 1];
+        // 同理排除不可能🍌的情况
+        if (!isLinesShadowOver(pointA, pointB, pointC, pointD)) {
+          continue;
+        }
+
+        if (isLinesOver(pointA, pointB, pointC, pointD)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   /// 圆形与圆形
   static bool circleToCircle(CcCircle a, CcCircle b) {
     // 优先利用外切矩形进行计算，节约开销
@@ -74,25 +115,31 @@ class CollisionUtil {
   }
 
   /// 复杂图形与复杂图形
-  static bool _complexToComplex(CcComplex a, CcComplex b) {
+  static bool complexToComplex(CcComplex a, CcComplex b) {
     // 优先利用外切矩形进行计算，节约开销
     if (!rectToRect(a.rect, b.rect)) return false;
 
-    for (var i = 0; i < a.points.length - 1; i++) {
-      final pointA = a.points[i];
-      final pointB = a.points[i + 1];
+    final pointsA = a.points.toList()..add(a.points.first);
+    final pointsB = a.points.toList()..add(a.points.first);
+    for (var i = 0; i < pointsA.length - 1; i++) {
+      final pointA = pointsA[i];
+      final pointB = pointsA[i + 1];
       // 排除不可能🍌的情况
       if (!isLinesShadowOver(
           pointA, pointB, b.rect.leftTop, b.rect.rightBottom)) {
         continue;
       }
 
-      for (var j = 0; j < b.points.length - 1; j++) {
-        final pointC = b.points[j];
-        final pointD = b.points[j + 1];
+      for (var j = 0; j < pointsB.length - 1; j++) {
+        final pointC = pointsB[j];
+        final pointD = pointsB[j + 1];
         // 同理排除不可能🍌的情况
         if (!isLinesShadowOver(pointA, pointB, pointC, pointD)) {
           continue;
+        }
+
+        if (isLinesOver(pointA, pointB, pointC, pointD)) {
+          return true;
         }
       }
     }
@@ -161,6 +208,21 @@ class CollisionUtil {
   /// 判断[a]~[b]线段与[c]~[d]线段是否🍌
   /// https://www.rogoso.info/%E5%88%A4%E6%96%AD%E7%BA%BF%E6%AE%B5%E7%9B%B8%E4%BA%A4/
   static bool isLinesOver(CcOffset a, CcOffset b, CcOffset c, CcOffset d) {
+    final ac = CcVector(a, c);
+    final ad = CcVector(a, d);
+    final bc = CcVector(b, c);
+    final bd = CcVector(b, d);
+    final ca = ac.negative;
+    final cb = bc.negative;
+    final da = ad.negative;
+    final db = bd.negative;
 
+    return vectorProduct(ac, ad) * vectorProduct(bc, bd) <= 0 &&
+        vectorProduct(ca, cb) * vectorProduct(da, db) <= 0;
+  }
+
+  /// 计算x1*y2-x2*y1;
+  static double vectorProduct(CcVector a, CcVector b) {
+    return a.x * b.y - b.x * a.y;
   }
 }
