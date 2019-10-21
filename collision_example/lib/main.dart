@@ -1,5 +1,6 @@
 import 'package:collision_check/collision_check.dart';
 import 'package:collision_example/page/test_page.dart';
+import 'package:collision_example/widget/complex_view.dart';
 import 'package:collision_example/widget/rect_view.dart';
 import 'package:collision_example/widget/circle_view.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,13 @@ class MyHomePage extends StatelessWidget {
           _buildChooseItem(
             context,
             text: "矩形~复杂图形",
-            page: null,
+            page: TestPage(
+              shapeA: RectView(color: Colors.blue),
+              shapeB: ComplexView(
+                color: Colors.orange,
+                initPosition: const CcOffset(200, 200),
+              ),
+            ),
           ),
           _buildChooseItem(
             context,
@@ -74,12 +81,24 @@ class MyHomePage extends StatelessWidget {
           _buildChooseItem(
             context,
             text: "圆形~复杂图形",
-            page: null,
+            page: TestPage(
+              shapeA: CircleView(color: Colors.blue),
+              shapeB: ComplexView(
+                color: Colors.orange,
+                initPosition: const CcOffset(200, 200),
+              ),
+            ),
           ),
           _buildChooseItem(
             context,
             text: "复杂图形~复杂图形",
-            page: null,
+            page: TestPage(
+              shapeA: ComplexView(color: Colors.blue),
+              shapeB: ComplexView(
+                color: Colors.orange,
+                initPosition: const CcOffset(200, 200),
+              ),
+            ),
           ),
         ],
       ),
