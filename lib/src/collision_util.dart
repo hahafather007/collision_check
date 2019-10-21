@@ -120,7 +120,7 @@ class CollisionUtil {
     if (!rectToRect(a.rect, b.rect)) return false;
 
     final pointsA = a.points.toList()..add(a.points.first);
-    final pointsB = a.points.toList()..add(a.points.first);
+    final pointsB = b.points.toList()..add(b.points.first);
     for (var i = 0; i < pointsA.length - 1; i++) {
       final pointA = pointsA[i];
       final pointB = pointsA[i + 1];
