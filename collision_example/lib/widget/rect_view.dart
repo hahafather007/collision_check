@@ -8,7 +8,10 @@ class RectView extends BaseView {
   final _state = _RectState();
 
   RectView(
-      {@required this.color, this.initPosition = const CcOffset(100, 100)});
+      {Key key,
+      @required this.color,
+      this.initPosition = const CcOffset(100, 100)})
+      : super(key: key);
 
   @override
   BaseState<StatefulWidget> get state => _state;

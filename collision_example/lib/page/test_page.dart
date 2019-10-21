@@ -22,6 +22,11 @@ class _TestPageState extends State<TestPage> {
         behavior: HitTestBehavior.opaque,
         onPanUpdate: (detail) {
           widget.shapeB.move(CcOffset.formOffset(detail.delta));
+          // 循环1000次是为了模仿一般游戏中有大量物体需要碰撞检查的情况
+          for (var i = 0; i < 1000; i++) {
+            CollisionUtil.isCollision(
+                widget.shapeA.getShape(), widget.shapeB.getShape());
+          }
           final result = CollisionUtil.isCollision(
               widget.shapeA.getShape(), widget.shapeB.getShape());
           if (result != _isCollision) {

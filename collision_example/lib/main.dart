@@ -37,68 +37,92 @@ class MyHomePage extends StatelessWidget {
           _buildChooseItem(
             context,
             text: "矩形~矩形",
-            page: TestPage(
-              shapeA: RectView(color: Colors.blue),
-              shapeB: RectView(
-                color: Colors.orange,
-                initPosition: const CcOffset(200, 200),
-              ),
-            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return TestPage(
+                  shapeA: RectView(color: Colors.blue),
+                  shapeB: RectView(
+                    color: Colors.orange,
+                    initPosition: const CcOffset(200, 200),
+                  ),
+                );
+              }));
+            },
           ),
           _buildChooseItem(
             context,
             text: "矩形~圆形",
-            page: TestPage(
-              shapeA: RectView(color: Colors.blue),
-              shapeB: CircleView(
-                color: Colors.orange,
-                initPosition: const CcOffset(200, 200),
-              ),
-            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return TestPage(
+                  shapeA: RectView(color: Colors.blue),
+                  shapeB: CircleView(
+                    color: Colors.orange,
+                    initPosition: const CcOffset(200, 200),
+                  ),
+                );
+              }));
+            },
           ),
           _buildChooseItem(
             context,
             text: "矩形~复杂图形",
-            page: TestPage(
-              shapeA: RectView(color: Colors.blue),
-              shapeB: ComplexView(
-                color: Colors.orange,
-                initPosition: const CcOffset(200, 200),
-              ),
-            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return TestPage(
+                  shapeA: RectView(color: Colors.blue),
+                  shapeB: ComplexView(
+                    color: Colors.orange,
+                    initPosition: const CcOffset(200, 200),
+                  ),
+                );
+              }));
+            },
           ),
           _buildChooseItem(
             context,
             text: "圆形~圆形",
-            page: TestPage(
-              shapeA: CircleView(color: Colors.blue),
-              shapeB: CircleView(
-                color: Colors.orange,
-                initPosition: const CcOffset(200, 200),
-              ),
-            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return TestPage(
+                  shapeA: CircleView(color: Colors.blue),
+                  shapeB: CircleView(
+                    color: Colors.orange,
+                    initPosition: const CcOffset(200, 200),
+                  ),
+                );
+              }));
+            },
           ),
           _buildChooseItem(
             context,
             text: "圆形~复杂图形",
-            page: TestPage(
-              shapeA: CircleView(color: Colors.blue),
-              shapeB: ComplexView(
-                color: Colors.orange,
-                initPosition: const CcOffset(200, 200),
-              ),
-            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return TestPage(
+                  shapeA: CircleView(color: Colors.blue),
+                  shapeB: ComplexView(
+                    color: Colors.orange,
+                    initPosition: const CcOffset(200, 200),
+                  ),
+                );
+              }));
+            },
           ),
           _buildChooseItem(
             context,
             text: "复杂图形~复杂图形",
-            page: TestPage(
-              shapeA: ComplexView(color: Colors.blue),
-              shapeB: ComplexView(
-                color: Colors.orange,
-                initPosition: const CcOffset(200, 200),
-              ),
-            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return TestPage(
+                  shapeA: ComplexView(color: Colors.blue),
+                  shapeB: ComplexView(
+                    color: Colors.orange,
+                    initPosition: const CcOffset(200, 200),
+                  ),
+                );
+              }));
+            },
           ),
         ],
       ),
@@ -106,13 +130,10 @@ class MyHomePage extends StatelessWidget {
   }
 
   Widget _buildChooseItem(BuildContext context,
-      {@required String text, @required Widget page}) {
+      {@required String text, @required VoidCallback onTap}) {
     return MaterialButton(
       color: Colors.grey,
-      onPressed: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => page));
-      },
+      onPressed: onTap,
       child: Text(text),
     );
   }

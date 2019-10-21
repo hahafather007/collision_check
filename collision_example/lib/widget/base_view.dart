@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 abstract class BaseView extends StatefulWidget {
   BaseState get state;
 
+  BaseView({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return state;
