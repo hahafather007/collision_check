@@ -6,6 +6,8 @@ import 'package:collision_check/collision_check.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  print("a".codeUnits);
+
   test("碰撞测试", () {
     // 矩形与圆形
     final value1 = CollisionUtil.isCollision(
