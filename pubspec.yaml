@@ -1,8 +1,8 @@
 name: collision_check
 description: 效率超高的碰撞检测插件，适用于所有Flutter平台
-version: 0.0.1
+version: 0.1.0
 author: hahafather007
-homepage:
+homepage: https://github.com/hahafather007/collision_check
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
