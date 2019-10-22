@@ -8,6 +8,10 @@
 
 An ultra-efficient lightweight 2D object collision detection plugin, written in pure Dart, for any Dart/Flutter project.
 
+## Demo
+
+<img src="screenshot/1.gif" height="480"/>
+
 ## 效率
 
 在计算五角星的碰撞时，如下测试代码100w次检测时间为1050ms，足够在一般的场景中检测大量物体的碰撞。
